@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,6 +10,7 @@
             display: flex;
             font-family: Arial, sans-serif;
         }
+
         #sidebar {
             width: 40px;
             padding: 10px;
@@ -17,6 +19,7 @@
             //grid-template-columns: repeat(2, 1fr);
             //grid-gap: 5px;
         }
+
         #sidebar .color {
             width: 30px;
             height: 30px;
@@ -24,6 +27,7 @@
             cursor: pointer;
             position: relative;
         }
+
         #sidebar .color:hover::after {
             content: attr(data-color-name);
             position: absolute;
@@ -37,17 +41,19 @@
             font-size: 12px;
             white-space: nowrap;
         }
+
         #colorWheelContainer {
             //grid-column: span 2;
             text-align: center;
         }
+
         #colorWheel {
             margin-top: 10px;
             width: 30px;
             height: 30px;
             cursor: pointer;
         }
-      
+
         #controls {
             display: flex;
             justify-content: flex-start;
@@ -55,6 +61,7 @@
             width: calc(100% - 60px);
             margin-left: 0px;
         }
+
         #grid {
             display: grid;
             grid-template-columns: repeat(100, 10px);
@@ -62,6 +69,7 @@
             margin: 10px;
             flex-grow: 1;
         }
+
         .dot {
             width: 10px;
             height: 10px;
@@ -76,41 +84,52 @@
             height: 1px;
             background-color: blue;
         }
+
         .divider-v {
             position: absolute;
             width: 1px;
             height: 100%;
             background-color: red;
         }
+
         .divider-v.first-col {
-            left: 256px; 
+            left: 256px;
         }
+
         .divider-v.second-col {
-            left: 430px; 
+            left: 430px;
         }
+
         .divider-v.third-col {
-            left: 608px; 
+            left: 608px;
         }
+
         .divider-v.fourth-col {
-            left: 784px; 
+            left: 784px;
         }
+
         .divider-v.fifth-col {
-            left: 960px; 
+            left: 960px;
         }
+
         .divider.starting-row {
-            top: 80px; 
+            top: 80px;
         }
+
         .divider.second-row {
-            top: 105px; 
+            top: 105px;
         }
+
         .divider.eighth-row {
-            top: 209px; 
+            top: 209px;
         }
+
         .divider.tenth-row {
-            top: 235px; 
+            top: 235px;
         }
+
         .divider-v.sixteenth-col {
-            left: 256px; 
+            left: 256px;
         }
 
         h2 {
@@ -120,32 +139,41 @@
         }
     </style>
 </head>
+
 <body>
     <div id="sidebar">
         <h2>Pick color</h2>
         <div class="color" style="background-color: red;" data-color-name="Red" onclick="selectColor('red')"></div>
-        <div class="color" style="background-color: green;" data-color-name="Green" onclick="selectColor('green')"></div>
+        <div class="color" style="background-color: green;" data-color-name="Green" onclick="selectColor('green')">
+        </div>
         <div class="color" style="background-color: blue;" data-color-name="Blue" onclick="selectColor('blue')"></div>
-        <div class="color" style="background-color: yellow;" data-color-name="Yellow" onclick="selectColor('yellow')"></div>
-        <div class="color" style="background-color: black;" data-color-name="Black" onclick="selectColor('black')"></div>
-        <div class="color" style="background-color: orange;" data-color-name="Orange" onclick="selectColor('orange')"></div>
-        <div class="color" style="background-color: purple;" data-color-name="Purple" onclick="selectColor('purple')"></div>
+        <div class="color" style="background-color: yellow;" data-color-name="Yellow" onclick="selectColor('yellow')">
+        </div>
+        <div class="color" style="background-color: black;" data-color-name="Black" onclick="selectColor('black')">
+        </div>
+        <div class="color" style="background-color: orange;" data-color-name="Orange" onclick="selectColor('orange')">
+        </div>
+        <div class="color" style="background-color: purple;" data-color-name="Purple" onclick="selectColor('purple')">
+        </div>
         <div class="color" style="background-color: pink;" data-color-name="Pink" onclick="selectColor('pink')"></div>
-        <div class="color" style="background-color: brown;" data-color-name="Brown" onclick="selectColor('brown')"></div>
+        <div class="color" style="background-color: brown;" data-color-name="Brown" onclick="selectColor('brown')">
+        </div>
         <div class="color" style="background-color: cyan;" data-color-name="Cyan" onclick="selectColor('cyan')"></div>
         <div id="colorWheelContainer">
-          <h2 style="margin-top:10px;padding:0px">Custom</h2>
+            <h2 style="margin-top:10px;padding:0px">Custom</h2>
             <input type="color" id="colorWheel" onchange="selectColor(this.value)">
         </div>
     </div>
     <div>
-    <h2 style="margin-right:20px">Click on sqaures below to mark dots with chosen colot. Click again to clear, or use the Erase button to clear all dots.</h2>        <div id="controls">
-    
+        <h2 style="margin-right:20px">Click on sqaures below to mark dots with chosen colot. Click again to clear, or
+            use the Erase button to clear all dots.</h2>
+        <div id="controls">
+
             <button onclick="eraseGrid()">Erase</button>
             <button onclick="exportJSON()">Export</button>
             <button onclick="importJSON()">Import</button>
-            <input type="file" id="fileInput" style="display: none;" />
-      &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp2+8+2
+            <input type="file" id="fileInput" style="display: none;" multiple />
+            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp2+8+2
         </div>
         <div id="grid">
             <!-- Dots will be generated here -->
@@ -190,7 +218,7 @@
                 litUpDots.splice(index, 1);
             } else {
                 dot.style.backgroundColor = selectedColor;
-                litUpDots.push({ row, col, color: selectedColor });
+                litUpDots.push({row, col, color: selectedColor});
             }
         }
 
@@ -207,27 +235,34 @@
         function importJSON() {
             const fileInput = document.getElementById('fileInput');
             fileInput.click();
-            fileInput.onchange = function(event) {
-                const file = event.target.files[0];
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const importedData = JSON.parse(e.target.result);
-                    clearGrid();
-                    restoreGrid(importedData);
-                };
-                reader.readAsText(file);
+            fileInput.onchange = function (event) {
+                clearGrid();
+                //                const file = event.target.files[0];
+                for (file of event.target.files) {
+
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const importedData = JSON.parse(e.target.result);
+                        setGrid(importedData);
+                    };
+reader.readAsText(file);
+                }
             };
         }
 
-        function restoreGrid(data) {
-            litUpDots.length = 0;
-            data.forEach(dotData => {
+        function setGrid(dots) {
+            dots.forEach(dotData => {
                 litUpDots.push(dotData);
                 const dot = document.querySelector(`.dot[data-row='${dotData.row}'][data-col='${dotData.col}']`);
                 if (dot) {
                     dot.style.backgroundColor = dotData.color;
                 }
             });
+        }
+
+        function restoreGrid(data) {
+            litUpDots.length = 0;
+            setGrid(data)
         }
 
         function clearGrid() {
@@ -245,8 +280,5 @@
         window.onload = createGrid;
     </script>
 </body>
+
 </html>
-
-
-
-
