@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>HTML Layout Example</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: start;
+      margin: 0;
+      /* Remove default body margins */
+    }
+
+    div {
+      margin: 5px;
+      border: solid 1px black;
+      ;
+    }
+
+    .fixed-bottom {
+      height: 50px;
+      /* Adjust height as needed */
+      background-color: lightblue;
+      /* Example styling */
+      width: 100%;
+      /* Full viewport width */
+      position: fixed;
+      /* Fix to bottom */
+      bottom: 0;
+    }
+
+    .main-section {
+      width: 100%;
+      padding: 20px;
+      /* Add some padding for visual appeal */
+      background-color: lightgray;
+      /* Example styling */
+    }
+
+    .main-left {
+      width: 150px;
+      /* Adjust width as needed */
+      background-color: lightgreen;
+      /* Example styling */
+      /* float: left; */
+    }
+
+    .main-right {
+      /* margin-left: 150px; */
+      /* Match the width of the left section */
+      background-color: lightyellow;
+      /* Example styling */
+    }
+
+    .main-top {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(2, 3fr);
+      background-color: lightcoral;
+      /* Example styling */
+    }
+
+    .main-bottom {
+      width: 100%;
+      background-color: lightpink;
+      display: grid;
+      grid-template-columns: repeat(18, 32px);
+      grid-gap: 5px;
+      flex-grow: 1;
+      /* Example styling */
+    }
+
+    .keyboard {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(18, 32px);
+      grid-gap: 3px;
+      margin: 10px;
+      // flex-grow: 1;
+      boder: solid black 2px;
+    }
+
+    .key {
+      width: 32px;
+      height: 32px;
+      background-color: #eee;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+      margin: 0;
+    }
+
+    #pixel-grid {
+      display: grid;
+      grid-template-columns: repeat(32, 2px);
+      grid-template-rows: repeat(32, 2px);
+      gap: 2px;
+    }
+
+    .pixel {
+      width: 2px;
+      height: 2px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      cursor: pointer;
+    }
+
+    .pixel.on {
+      background-color: #000;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <div class="main-section">
+    <div class="main-top">
+      <div class="main-left">Top Left</div>
+      <div class="main-right">
+        <div id="pixel-grid"></div>
+      </div>
+    </div>
+    <div class="keyboard">
+    </div>
+    <div class="fixed-bottom">
+      <button onclick="loadFonts()">Load Fonts</button>
+      <input type="file" id="fileInput" style="display: none;" multiple />
+    </div>
+
+    <script>
+      const fonts = []
+      function loadFonts() {
+
+        const keyboard = document.getElementsByClassName('keyboard')[0];
+        const fileInput = document.getElementById('fileInput');
+        fileInput.click();
+        fileInput.onchange = function (event) {
+          keyboard.innerHTML = "";
+          for (file of event.target.files) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              const importedData = JSON.parse(e.target.result);
+              fonts.push(importedData);
+              keyboard.appendChild(getKey(importedData));
+            };
+            reader.readAsText(file);
+          }
+        }
+      }
+
+      function getKey(font) {
+        const key = document.createElement('div');
+        key.classList.add('key');
+        key.dataset.font = font;
+        key.addEventListener('click',
+          () => toggleKey(key, font));
+
+        const canvas = key.appendChild(document.createElement('canvas'));
+        const ctx = canvas.getContext('2d');
+        const pixelSize = 1;
+
+        // loop to light up a specific pixels
+        for (dot of font) {
+          ctx.fillStyle = dot.color;
+          ctx.fillRect(dot.col * pixelSize, dot.row * pixelSize, pixelSize, pixelSize);
+        }
+        return key;
+      }
+
+      function toggleKey(key, font) {
+        //alert(JSON.stringify(font))
+        lightUpDots(font)
+      }
+
+      // Function to light up specific pixels
+      function lightUpPixels(pixels) {
+        const grid = document.getElementById('pixel-grid');
+        pixels.forEach(([x, y]) => {
+          const index = y * 32 + x;
+          grid.children[index].classList.add('on');
+        });
+      }
+
+      function clearDots() {
+        const grid = document.getElementById('pixel-grid');
+        for (pixel of grid.children)
+          pixel.classList.remove('on');
+      }
+      function lightUpDots(dots) {
+        const grid = document.getElementById('pixel-grid');
+        clearDots()
+        for (dot of dots) {
+          const index = dot.row * 32 + dot.col;
+          if (index < grid.children.length)
+            grid.children[index].classList.add('on');
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const grid = document.getElementById('pixel-grid');
+
+        // Create 16x16 grid of pixels
+        for (let i = 0; i < 1024; i++) {
+          const pixel = document.createElement('div');
+          pixel.classList.add('pixel');
+          pixel.addEventListener('click', function () {
+            pixel.classList.toggle('on');
+          });
+          grid.appendChild(pixel);
+        }
+
+        // Example usage: light up a diagonal line
+        const pixelsToLightUp = [
+          [0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7], [8, 8], [9, 9],
+          [10, 10], [11, 11], [12, 12], [13, 13], [14, 14], [15, 15]
+        ];
+        //  lightUpPixels(pixelsToLightUp);
+      });
+
+    </script>
+</body>
+
+</html>
