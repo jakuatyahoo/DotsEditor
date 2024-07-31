@@ -2,3 +2,159 @@ html {
   height: 100%;
   width: 100%;
 }
+
+body {
+  display: flex;
+  font-family: Arial, sans-serif;
+}
+
+div {
+  /* border: solid 1px yellow; */
+}
+
+#sidebar {
+  width: 70px;
+  padding: 10px;
+  border-right: 1px solid #ccc;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 4px;
+}
+
+#sidebar .color {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #000;
+  cursor: pointer;
+  position: relative;
+}
+
+#sidebar .color:hover::after {
+  content: attr(data-color-name);
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+#colorWheelContainer {
+  grid-column: span 2;
+  text-align: center;
+  margin-top: 10px;
+}
+
+#colorWheel {
+  //  margin-top: 10px;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+}
+
+#controls {
+  display: flex;
+  justify-content: stretch;
+  padding: 10px;
+  width: calc(100% - 60px);
+  margin-left: 0px;
+}
+
+.keyboard {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(18, 20px);
+  grid-gap: 3px;
+  margin: 10px;
+  // flex-grow: 1;
+  boder: solid black 2px;
+}
+
+.key {
+  width: 20px;
+  height: 20px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+#grid {
+  display: grid;
+  //grid-template-columns: repeat(96, 10px);
+  grid-gap: 1px;
+  //  margin: 10px;
+  flex-grow: 1;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.divider {
+  position: absolute;
+  /* width: 1101px; */
+  height: 1px;
+  background-color: blue;
+}
+
+.divider-v {
+  position: absolute;
+  width: 1px;
+  //  height: 206px;
+  background-color: red;
+}
+
+.divider-v.first-col {
+  left: 256px;
+}
+
+.divider-v.second-col {
+  left: 430px;
+}
+
+.divider-v.third-col {
+  left: 608px;
+}
+
+.divider-v.fourth-col {
+  left: 784px;
+}
+
+.divider-v.fifth-col {
+  left: 960px;
+}
+
+.divider.starting-row {
+
+  top: 80px;
+}
+
+.divider.second-row {
+  top: 105px;
+}
+
+.divider.eighth-row {
+  top: 209px;
+}
+
+.divider.tenth-row {
+  top: 235px;
+}
+
+.divider-v.sixteenth-col {
+  left: 256px;
+}
+
+h2 {
+  margin: 0;
+  //padding: 0 10px;
+  font-size: 16px;
+}
