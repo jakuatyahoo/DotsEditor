@@ -31,7 +31,7 @@ function importJSON() {
     const fileInput = document.getElementById('fileInput');
     fileInput.click();
     fileInput.onchange = function (event) {
-        clearGrid();
+            clearGridEditor();
         //                const file = event.target.files[0];
         for (file of event.target.files) {
 
@@ -45,6 +45,30 @@ reader.readAsText(file);
     };
 }
 
+function updateFont() {
+    if(currentFont) {
+        const newFonts = extractFonts(litUpDots);
+        if (newFonts.length > 0) {
+            currentFont.width = newFonts[0].width,
+            currentFont.height = newFonts[0].height,
+            currentFont.minX = newFonts[0].minX,
+            currentFont.minY = newFonts[0].minY,
+            currentFont.maxY = newFonts[0].maxY,
+            currentFont.maxX = newFonts[0].maxX
+            currentFont.dots.splice(0,                                         currentFont.dots.length)
+            for (dot of newFonts[0].dots)                 
+                currentFont.dots.push(dot);
+            
+            drawFont(currentFont.canvas, currentFont);
+        }
+    }
+}
+
+var currentFont;
+function setGridFont(font) {
+    currentFont = font;  
+    setGrid(font.dots)
+}
 function setGrid(dots) {
     dots.forEach(dotData => {
         litUpDots.push(dotData);
@@ -60,7 +84,7 @@ function restoreGrid(data) {
     setGrid(data)
 }
 
-function clearGrid() {
+function clearGridEditor() {
     const dots = document.querySelectorAll('.dot');
     dots.forEach(dot => {
         dot.style.backgroundColor = '#eee';
@@ -69,6 +93,6 @@ function clearGrid() {
 }
 
 function eraseGrid() {
-    clearGrid();
+        clearGridEditor();
 }
 
