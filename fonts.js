@@ -1,4 +1,27 @@
 const fonts = []
+
+function loadFontsArray() {
+
+const keyboard = document.getElementsByClassName('keyboard')[0];
+const fileInput = document.getElementById('fileInput');
+fileInput.click();
+fileInput.onchange = function(event) {
+  keyboard.innerHTML = "";
+  fonts.splice(0, fonts.length); // remove all fonts
+  for (file of event.target.files) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const importedData = JSON.parse(e.target.result);
+      for (font of importedData){
+        fonts.push(font)
+      keyboard.appendChild(getKey(font));
+    }
+    }
+    reader.readAsText(file);
+    }
+  }
+}
+    
 function loadFonts() {
 
   const keyboard = document.getElementsByClassName('keyboard')[0];
@@ -86,24 +109,31 @@ function getKey(font) {
   key.dataset.font = font;
   key.addEventListener('click',
     () => toggleKey(key, font));
-
   const canvas = key.appendChild(document.createElement('canvas'));
+  font.canvas = canvas;
+  drawFont(canvas, font);
+  return key;
+}
+
+function drawFont(canvas, font) {
   const ctx = canvas.getContext('2d');
   const pixelSize = 1;
   const offsetX = offsetToCenter(32, font.width);
   const offsetY = offsetToCenter(32, font.height);
 
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
   // loop to light up a specific pixels
   for (dot of font.dots) {
     ctx.fillStyle = dot.color;
     ctx.fillRect((dot.col+offsetX) * pixelSize, (dot.row+offsetY) * pixelSize, pixelSize, pixelSize);
   }
-  return key;
-}
 
+}
 function toggleKey(key, font) {
   //alert(JSON.stringify(font))
   lightUpDots(font)
+  clearGridEditor();
+  setGridFont(font);
 }
 
 // Function to light up specific pixels
@@ -116,6 +146,7 @@ function lightUpPixels(pixels) {
 }
 
 function clearDots() {
+    clearGridEditor()
   const grid = document.getElementById('pixel-grid');
   grid.charPosX = 0;
   grid.charPosY = 0;
@@ -141,5 +172,17 @@ function lightUpDots(font) {
     }
   }
   grid.charPosX += font.width + 2;
+}
+
+
+
+function exportFonts() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fonts));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", "fonts.json");
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
 }
 
