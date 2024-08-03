@@ -4,149 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css" />
     <title>Dot Grid</title>
     <style>
-        body {
-            display: flex;
-            font-family: Arial, sans-serif;
-        }
-
-        #sidebar {
-            width: 40px;
-            padding: 10px;
-            border-right: 1px solid #ccc;
-            //display: grid;
-            //grid-template-columns: repeat(2, 1fr);
-            //grid-gap: 5px;
-        }
-
-        #sidebar .color {
-            width: 30px;
-            height: 30px;
-            border: 1px solid #000;
-            cursor: pointer;
-            position: relative;
-        }
-
-        #sidebar .color:hover::after {
-            content: attr(data-color-name);
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.7);
-            color: #fff;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-size: 12px;
-            white-space: nowrap;
-        }
-
-        #colorWheelContainer {
-            //grid-column: span 2;
-            text-align: center;
-        }
-
-        #colorWheel {
-            margin-top: 10px;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-        }
-
-        #controls {
-            display: flex;
-            justify-content: flex-start;
-            padding: 10px;
-            width: calc(100% - 60px);
-            margin-left: 0px;
-        }
-
-        #grid {
-            display: grid;
-            grid-template-columns: repeat(100, 10px);
-            grid-gap: 1px;
-            margin: 10px;
-            flex-grow: 1;
-        }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            background-color: #eee;
-            border: 1px solid #ccc;
-            cursor: pointer;
-        }
-
-        .divider {
-            position: absolute;
-            width: 100%;
-            height: 1px;
-            background-color: blue;
-        }
-
-        .divider-v {
-            position: absolute;
-            width: 1px;
-            height: 100%;
-            background-color: red;
-        }
-
-        .divider-v.first-col {
-            left: 256px;
-        }
-
-        .divider-v.second-col {
-            left: 430px;
-        }
-
-        .divider-v.third-col {
-            left: 608px;
-        }
-
-        .divider-v.fourth-col {
-            left: 784px;
-        }
-
-        .divider-v.fifth-col {
-            left: 960px;
-        }
-
-        .divider.starting-row {
-            top: 80px;
-        }
-
-        .divider.second-row {
-            top: 105px;
-        }
-
-        .divider.eighth-row {
-            top: 209px;
-        }
-
-        .divider.tenth-row {
-            top: 235px;
-        }
-
-        .divider-v.sixteenth-col {
-            left: 256px;
-        }
-
-        h2 {
-            margin: 0;
-            //padding: 0 10px;
-            font-size: 16px;
-        }
     </style>
 </head>
 
 <body>
     <div id="sidebar">
-        <h2>Pick color</h2>
-        <div class="color" style="background-color: red;" data-color-name="Red" onclick="selectColor('red')"></div>
+        <div style="grid-column: span 2; text-align: center; margin=0;">
+            <h5> Pick color</h5>
+        </div>
+        <div class="color" style="background-color: red;" data-color-name="Red" onclick="selectColor('red')">
+        </div>
         <div class="color" style="background-color: green;" data-color-name="Green" onclick="selectColor('green')">
         </div>
-        <div class="color" style="background-color: blue;" data-color-name="Blue" onclick="selectColor('blue')"></div>
+        <div class="color" style="background-color: blue;" data-color-name="Blue" onclick="selectColor('blue')">
+        </div>
         <div class="color" style="background-color: yellow;" data-color-name="Yellow" onclick="selectColor('yellow')">
         </div>
         <div class="color" style="background-color: black;" data-color-name="Black" onclick="selectColor('black')">
@@ -155,128 +30,92 @@
         </div>
         <div class="color" style="background-color: purple;" data-color-name="Purple" onclick="selectColor('purple')">
         </div>
-        <div class="color" style="background-color: pink;" data-color-name="Pink" onclick="selectColor('pink')"></div>
+        <div class="color" style="background-color: pink;" data-color-name="Pink" onclick="selectColor('pink')">
+        </div>
         <div class="color" style="background-color: brown;" data-color-name="Brown" onclick="selectColor('brown')">
         </div>
-        <div class="color" style="background-color: cyan;" data-color-name="Cyan" onclick="selectColor('cyan')"></div>
+        <div class="color" style="background-color: cyan;" data-color-name="Cyan" onclick="selectColor('cyan')">
+        </div>
         <div id="colorWheelContainer">
-            <h2 style="margin-top:10px;padding:0px">Custom</h2>
+            <h5 style="margin:2px">Custom</h5>
             <input type="color" id="colorWheel" onchange="selectColor(this.value)">
         </div>
     </div>
-    <div>
-        <h2 style="margin-right:20px">Click on sqaures below to mark dots with chosen colot. Click again to clear, or
-            use the Erase button to clear all dots.</h2>
+    <div style="padding: 20px;">
+        <h2 style="margin-right:20px">Click on sqaures below to mark dots with chosen colot. Click again to clear,
+            or use the Erase button to clear all dots.
+        </h2>
         <div id="controls">
-
             <button onclick="eraseGrid()">Erase</button>
             <button onclick="exportJSON()">Export</button>
             <button onclick="importJSON()">Import</button>
             <input type="file" id="fileInput" style="display: none;" multiple />
-            &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp2+8+2
+            <span style="margin-left: 20px">3+7+3</span>
         </div>
         <div id="grid">
             <!-- Dots will be generated here -->
-            <div class="divider starting-row"></div>
-            <div class="divider second-row"></div>
-            <div class="divider eighth-row"></div>
-            <div class="divider tenth-row"></div>
-            <div class="divider-v first-col"></div>
-            <div class="divider-v second-col"></div>
-            <div class="divider-v third-col"></div>
-            <div class="divider-v fourth-col"></div>
-            <div class="divider-v fifth-col"></div>
-            <div class="divider-v sixth-col"></div>
         </div>
     </div>
+    <div>
+    </div>
+    <!-- <div class="keyboard">
+        <div class="key">A</div>
+        <div class="key">B</div>
+        <div class="key">C</div>
+        <div class="key">D</div>
+        <div class="key">E</div>
+    </div>  -->
     <script>
-        let selectedColor = 'red';
-        const litUpDots = [];
-
-        function selectColor(color) {
-            selectedColor = color;
-        }
-
+        const rows = 16, cols = 6 * 16;
+        const linePos = [0, 2, 9, 12, 15];
+        const colPos = [0, 15, 31, 47, 63, 79, 95];
         function createGrid() {
             const grid = document.getElementById('grid');
-            for (let row = 0; row < 16; row++) {
-                for (let col = 0; col < 100; col++) {
+            grid.style.gridTemplateColumns = `repeat(${cols}, 10px)`;
+            var dotRect, topPos, leftPos;
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
                     const dot = document.createElement('div');
                     dot.classList.add('dot');
                     dot.dataset.row = row;
                     dot.dataset.col = col;
-                    dot.addEventListener('click', () => toggleDot(dot, row, col));
+                    dot.addEventListener('click',
+                        () => toggleDot(dot, row, col));
+
                     grid.appendChild(dot);
+
+                    // draw horizontal lines
+                    if (col == (cols - 1) && linePos.includes(row)) {
+                        const divider = document.createElement('div');
+                        divider.classList.add('divider');
+                        const pos = dot.getBoundingClientRect();
+                        divider.style.top = (row == 0 ? pos.top : pos.bottom) + 'px';
+                        divider.style.width = (pos.right - leftPos) + 'px';
+                        grid.appendChild(divider);
+                    }
+
+                    if (row == 0 && !topPos) {
+                        topPos = dot.getBoundingClientRect().top;
+                    }
+
+                    if (col == 0 && !leftPos) {
+                        leftPos = dot.getBoundingClientRect().left;
+                    }
+
+                    // draw vertical lines
+                    if (row == (rows - 1) && colPos.includes(col)) {
+                        const divider = document.createElement('div');
+                        divider.classList.add('divider-v');
+                        const pos = dot.getBoundingClientRect();
+                        divider.style.left = (col == 0 ? pos.left : pos.right) + 'px';
+                        divider.style.height = (pos.bottom - topPos) + 'px';
+                        grid.appendChild(divider);
+                    }
+
                 }
+
             }
         }
-
-        function toggleDot(dot, row, col) {
-            const index = litUpDots.findIndex(d => d.row === row && d.col === col);
-            if (index !== -1) {
-                dot.style.backgroundColor = '#eee';
-                litUpDots.splice(index, 1);
-            } else {
-                dot.style.backgroundColor = selectedColor;
-                litUpDots.push({row, col, color: selectedColor});
-            }
-        }
-
-        function exportJSON() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(litUpDots));
-            const downloadAnchorNode = document.createElement('a');
-            downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", "litUpDots.json");
-            document.body.appendChild(downloadAnchorNode);
-            downloadAnchorNode.click();
-            downloadAnchorNode.remove();
-        }
-
-        function importJSON() {
-            const fileInput = document.getElementById('fileInput');
-            fileInput.click();
-            fileInput.onchange = function (event) {
-                clearGrid();
-                //                const file = event.target.files[0];
-                for (file of event.target.files) {
-
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const importedData = JSON.parse(e.target.result);
-                        setGrid(importedData);
-                    };
-reader.readAsText(file);
-                }
-            };
-        }
-
-        function setGrid(dots) {
-            dots.forEach(dotData => {
-                litUpDots.push(dotData);
-                const dot = document.querySelector(`.dot[data-row='${dotData.row}'][data-col='${dotData.col}']`);
-                if (dot) {
-                    dot.style.backgroundColor = dotData.color;
-                }
-            });
-        }
-
-        function restoreGrid(data) {
-            litUpDots.length = 0;
-            setGrid(data)
-        }
-
-        function clearGrid() {
-            const dots = document.querySelectorAll('.dot');
-            dots.forEach(dot => {
-                dot.style.backgroundColor = '#eee';
-            });
-            litUpDots.length = 0;
-        }
-
-        function eraseGrid() {
-            clearGrid();
-        }
-
         window.onload = createGrid;
     </script>
 </body>

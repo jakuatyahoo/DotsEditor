@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>HTML Layout Example</title>
+  <link rel="stylesheet" type="text/css" href="layout.css">
+  <script src="fonts.js"></script>
+</head>
+
+<body>
+
+
+  <div class="main-section">
+    <div class="main-top">
+      <div class="main-left">Top Left</div>
+      <div class="main-right">
+        <div id="pixel-grid"></div>
+      </div>
+    </div>
+    <div class="keyboard"></div>
+    <div class="fixed-bottom">
+      <button onclick="loadFonts()">Load Fonts</button>
+      <button onclick="clearDots()">Erase</button>
+      <input type="file" id="fileInput" style="display: none;" multiple />
+    </div>
+  </div>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const grid = document.getElementById('pixel-grid');
+
+      // Create 16x16 grid of pixels
+      for (let i = 0; i < 32 * 128; i++) {
+        const pixel = document.createElement('div');
+        pixel.classList.add('pixel');
+        pixel.addEventListener('click', function () {
+          pixel.classList.toggle('on');
+        });
+        grid.appendChild(pixel);
+      }
+
+      // Example usage: light up a diagonal line
+      const pixelsToLightUp = [
+        [0, 0], [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [7, 7], [8, 8], [9, 9],
+        [10, 10], [11, 11], [12, 12], [13, 13], [14, 14], [15, 15]
+      ];
+      //  lightUpPixels(pixelsToLightUp);
+    });
+
+  </script>
+</body>
+
+</html>

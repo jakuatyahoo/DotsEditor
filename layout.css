@@ -1,0 +1,115 @@
+body {
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+  align-self: center;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  margin: auto;
+}
+
+div {
+  /* margin: 5px; */
+  border: none; //solid 1px black;
+  ;
+}
+
+.fixed-bottom {
+//  height: 50px;
+  /* Adjust height as needed */
+//  background-color: lightblue;
+  /* Example styling */
+  /* Full viewport width */
+//  flex : 1;
+  /* Fix to bottom */
+  padding: 10px;
+  align-self: center;
+}
+
+.main-section {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+//  width: 100%;
+//  height: 100%;
+  padding: 20px;
+  margin: auto;
+  /* Add some padding for visual appeal */
+  background-color: lightgray;
+  /* Example styling */
+}
+
+.main-left {
+  width: 150px;
+  /* Adjust width as needed */
+  background-color: lightgreen;
+  /* Example styling */
+  /* float: left; */
+}
+
+.main-right {
+  /* margin-left: 150px; */
+  /* Match the width of the left section */
+  background-color: lightyellow;
+  flex: 1
+    /* Example styling */
+}
+
+.main-top {
+  display: flex;
+  flex: 1;
+  background-color: lightcoral;
+  /* Example styling */
+}
+
+.main-bottom {
+  background-color: lightpink;
+  display: grid;
+  grid-template-columns: repeat(18, 32px);
+  grid-gap: 5px;
+  flex-grow: 1;
+  /* Example styling */
+}
+
+.keyboard {
+  display: grid;
+  padding: 5px;
+  border : solid 1px black;
+  grid-template-columns: repeat(18, 32px);
+  grid-gap: 3px;
+//  margin: 10px;
+  flex: 1;
+  boder: solid black 1px;
+justify-content: space-evenly;
+align-content: space-evenly;
+}
+
+.key {
+  width: 32px;
+  height: 32px;
+  background-color: #eee;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+
+#pixel-grid {
+  display: grid;
+  grid-template-columns: repeat(128, 2px);
+  grid-template-rows: repeat(32, 2px);
+  gap: 2px;
+}
+
+.pixel {
+  width: 2px;
+  height: 2px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}
+
+.pixel.on {
+  background-color: #000;
+}
