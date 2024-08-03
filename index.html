@@ -4,67 +4,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <!-- <link rel="stylesheet" type="text/css" href="layout.css"> -->
+    <script src="fonts.js"></script>
     <script src="script.js"></script>
-    <link rel="stylesheet" href="style.css" />
     <title>Dot Grid</title>
     <style>
     </style>
 </head>
 
 <body>
-    <div id="sidebar">
-        <div style="grid-column: span 2; text-align: center; margin=0;">
-            <h5> Pick color</h5>
+    <!-- <div class="main-section"> -->
+    <div class="main-top">
+        <!-- <div class="main-left"> -->
+        <div id="sidebar">
+            <div style="grid-column: span 2; text-align: center; margin=0;">
+                <h5> Pick color</h5>
+            </div>
+            <div class="color" style="background-color: red;" data-color-name="Red" onclick="selectColor('red')">
+            </div>
+            <div class="color" style="background-color: green;" data-color-name="Green" onclick="selectColor('green')">
+            </div>
+            <div class="color" style="background-color: blue;" data-color-name="Blue" onclick="selectColor('blue')">
+            </div>
+            <div class="color" style="background-color: yellow;" data-color-name="Yellow"
+                onclick="selectColor('yellow')">
+            </div>
+            <div class="color" style="background-color: black;" data-color-name="Black" onclick="selectColor('black')">
+            </div>
+            <div class="color" style="background-color: orange;" data-color-name="Orange"
+                onclick="selectColor('orange')">
+            </div>
+            <div class="color" style="background-color: purple;" data-color-name="Purple"
+                onclick="selectColor('purple')">
+            </div>
+            <div class="color" style="background-color: pink;" data-color-name="Pink" onclick="selectColor('pink')">
+            </div>
+            <div class="color" style="background-color: brown;" data-color-name="Brown" onclick="selectColor('brown')">
+            </div>
+            <div class="color" style="background-color: cyan;" data-color-name="Cyan" onclick="selectColor('cyan')">
+            </div>
+            <div id="colorWheelContainer">
+                <h5 style="margin:2px">Custom</h5>
+                <input type="color" id="colorWheel" onchange="selectColor(this.value)">
+            </div>
         </div>
-        <div class="color" style="background-color: red;" data-color-name="Red" onclick="selectColor('red')">
-        </div>
-        <div class="color" style="background-color: green;" data-color-name="Green" onclick="selectColor('green')">
-        </div>
-        <div class="color" style="background-color: blue;" data-color-name="Blue" onclick="selectColor('blue')">
-        </div>
-        <div class="color" style="background-color: yellow;" data-color-name="Yellow" onclick="selectColor('yellow')">
-        </div>
-        <div class="color" style="background-color: black;" data-color-name="Black" onclick="selectColor('black')">
-        </div>
-        <div class="color" style="background-color: orange;" data-color-name="Orange" onclick="selectColor('orange')">
-        </div>
-        <div class="color" style="background-color: purple;" data-color-name="Purple" onclick="selectColor('purple')">
-        </div>
-        <div class="color" style="background-color: pink;" data-color-name="Pink" onclick="selectColor('pink')">
-        </div>
-        <div class="color" style="background-color: brown;" data-color-name="Brown" onclick="selectColor('brown')">
-        </div>
-        <div class="color" style="background-color: cyan;" data-color-name="Cyan" onclick="selectColor('cyan')">
-        </div>
-        <div id="colorWheelContainer">
-            <h5 style="margin:2px">Custom</h5>
-            <input type="color" id="colorWheel" onchange="selectColor(this.value)">
+        <!-- <div class="main-right"> -->
+        <div style="padding: 20px;"> 
+            <h2 style="margin-right:20px">Click on sqaures below to mark dots with chosen colot. Click again to
+                clear, or use the Erase button to clear all dots.
+            </h2>
+            <div id="grid">
+                <!-- Dots will be generated here -->
+            </div>
+            <!-- </div> -->
         </div>
     </div>
-    <div style="padding: 20px;">
-        <h2 style="margin-right:20px">Click on sqaures below to mark dots with chosen colot. Click again to clear,
-            or use the Erase button to clear all dots.
-        </h2>
+    <div class="keyboard">
+    </div>
+    <div class="fixed-bottom">
         <div id="controls">
+            <button onclick="loadFonts()">Load Fonts</button>
             <button onclick="eraseGrid()">Erase</button>
             <button onclick="exportJSON()">Export</button>
             <button onclick="importJSON()">Import</button>
             <input type="file" id="fileInput" style="display: none;" multiple />
-            <span style="margin-left: 20px">3+7+3</span>
-        </div>
-        <div id="grid">
-            <!-- Dots will be generated here -->
         </div>
     </div>
-    <div>
-    </div>
-    <!-- <div class="keyboard">
-        <div class="key">A</div>
-        <div class="key">B</div>
-        <div class="key">C</div>
-        <div class="key">D</div>
-        <div class="key">E</div>
-    </div>  -->
+    <!-- </div> -->
+    <!-- </div> -->
     <script>
         const rows = 16, cols = 6 * 16;
         const linePos = [0, 2, 9, 12, 15];
