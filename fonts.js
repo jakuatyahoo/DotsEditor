@@ -2,26 +2,26 @@ const fonts = []
 
 function loadFontsArray() {
 
-const keyboard = document.getElementsByClassName('keyboard')[0];
-const fileInput = document.getElementById('fileInput');
-fileInput.click();
-fileInput.onchange = function(event) {
-  keyboard.innerHTML = "";
-  fonts.splice(0, fonts.length); // remove all fonts
-  for (file of event.target.files) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const importedData = JSON.parse(e.target.result);
-      for (font of importedData){
-        fonts.push(font)
-      keyboard.appendChild(getKey(font));
-    }
-    }
-    reader.readAsText(file);
+  const keyboard = document.getElementsByClassName('keyboard')[0];
+  const fileInput = document.getElementById('fileInput');
+  fileInput.click();
+  fileInput.onchange = function(event) {
+    keyboard.innerHTML = "";
+    fonts.splice(0, fonts.length); // remove all fonts
+    for (file of event.target.files) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const importedData = JSON.parse(e.target.result);
+        for (font of importedData) {
+          fonts.push(font)
+          keyboard.appendChild(getKey(font));
+        }
+      }
+      reader.readAsText(file);
     }
   }
 }
-    
+
 function loadFonts() {
 
   const keyboard = document.getElementsByClassName('keyboard')[0];
@@ -33,7 +33,7 @@ function loadFonts() {
       const reader = new FileReader();
       reader.onload = function(e) {
         const importedData = JSON.parse(e.target.result);
-        extractFonts(importedData).forEach(font =>{
+        extractFonts(importedData).forEach(font => {
           fonts.push(font);
           keyboard.appendChild(getKey(font));
         });
@@ -46,7 +46,7 @@ function loadFonts() {
 function extractFonts(dots) {
   const filledCols = new Array(64)//.fill(()=>[]);
   const filledRows = new Array(32)//.fill(()=>[]);
-  
+
   for (dot of dots) {
     (filledCols[dot.col] || (filledCols[dot.col] = [])).push(dot);
     (filledRows[dot.row] || (filledRows[dot.row] = [])).push(dot);
@@ -54,43 +54,43 @@ function extractFonts(dots) {
 
   const fonts = [];
   for (let col = 0; col < filledCols.length; col++) {
-      if (!filledCols[col]) continue;
-      
-      var colDots = filledCols[col];
-      const font = {
-          dots : [],
-          width : 0,
-          height : 0,
-          minX : col,
-          minY : colDots[0].row,
-          maxY : 0,
-          maxX : 0
-      };
-          
-      while(col < 64 && (colDots = filledCols[col++])) {
-        for (dot of colDots) {
-          if (dot.row < font.minY) {
-            font.minY = dot.row;
-          }
-          if (dot.row > font.maxY) {
-            font.maxY = dot.row;
-          }
-          font.dots.push(dot);
-        }
-      }
+    if (!filledCols[col]) continue;
 
-      font.maxX = --col-1;
-      font.width = font.maxX - font.minX;
-      font.height = font.maxY - font.minY;
+    var colDots = filledCols[col];
+    const font = {
+      dots: [],
+      width: 0,
+      height: 0,
+      minX: col,
+      minY: colDots[0].row,
+      maxY: 0,
+      maxX: 0
+    };
 
-      // translate to top left
-      if (font.minX > 0 || font.minY > 0) {
-        for (dot of font.dots) {
-          dot.col -= font.minX;
-          dot.row -= font.minY;
+    while (col < 64 && (colDots = filledCols[col++])) {
+      for (dot of colDots) {
+        if (dot.row < font.minY) {
+          font.minY = dot.row;
         }
+        if (dot.row > font.maxY) {
+          font.maxY = dot.row;
+        }
+        font.dots.push(dot);
       }
-    
+    }
+
+    font.maxX = --col - 1;
+    font.width = font.maxX - font.minX;
+    font.height = font.maxY - font.minY;
+
+    // translate to top left
+    if (font.minX > 0 || font.minY > 0) {
+      for (dot of font.dots) {
+        dot.col -= font.minX;
+        // dot.row -= font.minY;
+      }
+    }
+
     fonts.push(font);
   }
 
@@ -99,7 +99,7 @@ function extractFonts(dots) {
 }
 
 function offsetToCenter(size, segment) {
-  const offset = Math.floor((size-segment)/2);
+  const offset = Math.floor((size - segment) / 2);
   return offset < 0 ? 0 : offset;
 }
 
@@ -125,12 +125,17 @@ function drawFont(canvas, font) {
   // loop to light up a specific pixels
   for (dot of font.dots) {
     ctx.fillStyle = dot.color;
-    ctx.fillRect((dot.col+offsetX) * pixelSize, (dot.row+offsetY) * pixelSize, pixelSize, pixelSize);
+    ctx.fillRect((dot.col + offsetX) * pixelSize, (dot.row + offsetY) * pixelSize, pixelSize, pixelSize);
   }
 
 }
+
+var currentKey;
 function toggleKey(key, font) {
   //alert(JSON.stringify(font))
+  if (currentKey) currentKey.classList.remove('editing');
+  currentKey = key;
+  key.classList.add('editing');
   lightUpDots(font)
   clearGridEditor();
   setGridFont(font);
@@ -146,11 +151,11 @@ function lightUpPixels(pixels) {
 }
 
 function clearDots() {
-    clearGridEditor()
+  clearGridEditor()
   const grid = document.getElementById('pixel-grid');
   grid.charPosX = 0;
   grid.charPosY = 0;
-  
+
   for (pixel of grid.children)
     pixel.classList.remove('on');
 }
@@ -163,7 +168,7 @@ function lightUpDots(font) {
 
   if ((grid.charPosX + font.width) >= 128) {
     grid.charPosX = 0;
-    grid.charPosY += 1*16;
+    grid.charPosY += 1 * 16;
   }
   for (dot of font.dots) {
     const index = ((dot.row + grid.charPosY) * 128) + dot.col + (grid.charPosX);
@@ -177,12 +182,12 @@ function lightUpDots(font) {
 
 
 function exportFonts() {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fonts));
-    const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", "fonts.json");
-    document.body.appendChild(downloadAnchorNode);
-    downloadAnchorNode.click();
-    downloadAnchorNode.remove();
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fonts));
+  const downloadAnchorNode = document.createElement('a');
+  downloadAnchorNode.setAttribute("href", dataStr);
+  downloadAnchorNode.setAttribute("download", "fonts.json");
+  document.body.appendChild(downloadAnchorNode);
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
 }
 
