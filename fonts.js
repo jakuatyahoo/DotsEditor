@@ -10,48 +10,74 @@ function loadFonts() {
       const reader = new FileReader();
       reader.onload = function(e) {
         const importedData = JSON.parse(e.target.result);
-        const font = makeFont(importedData);
-        fonts.push(font);
-        keyboard.appendChild(getKey(font));
+        extractFonts(importedData).forEach(font =>{
+          fonts.push(font);
+          keyboard.appendChild(getKey(font));
+        });
       };
       reader.readAsText(file);
     }
   }
 }
 
-function makeFont(dots) {
-  var minX = dots[0].col, 
-    minY = dots[0].row, 
-    maxX = 0, maxY = 0;
+function extractFonts(dots) {
+  const filledCols = new Array(64)//.fill(()=>[]);
+  const filledRows = new Array(32)//.fill(()=>[]);
   
   for (dot of dots) {
-    if (dot.col < minX) {
-      minX = dot.col;
-    }
-    if (dot.row < minY) {
-      minY = dot.row;
-    }
-    if (dot.col > maxX) {
-      maxX = dot.col;
-    }
-    if (dot.row > maxY) {
-      maxY = dot.row;
-    }
+    (filledCols[dot.col] || (filledCols[dot.col] = [])).push(dot);
+    (filledRows[dot.row] || (filledRows[dot.row] = [])).push(dot);
   }
 
-  // translate to top left
-  if (minX > 0 || minY > 0) {
-    for (dot of dots) {
-      dot.col -= minX;
-      dot.row -= minY;
-    }
+  const fonts = [];
+  for (let col = 0; col < filledCols.length; col++) {
+      if (!filledCols[col]) continue;
+      
+      var colDots = filledCols[col];
+      const font = {
+          dots : [],
+          width : 0,
+          height : 0,
+          minX : col,
+          minY : colDots[0].row,
+          maxY : 0,
+          maxX : 0
+      };
+          
+      while(col < 64 && (colDots = filledCols[col++])) {
+        for (dot of colDots) {
+          if (dot.row < font.minY) {
+            font.minY = dot.row;
+          }
+          if (dot.row > font.maxY) {
+            font.maxY = dot.row;
+          }
+          font.dots.push(dot);
+        }
+      }
+
+      font.maxX = --col-1;
+      font.width = font.maxX - font.minX;
+      font.height = font.maxY - font.minY;
+
+      // translate to top left
+      if (font.minX > 0 || font.minY > 0) {
+        for (dot of font.dots) {
+          dot.col -= font.minX;
+          dot.row -= font.minY;
+        }
+      }
+    
+    fonts.push(font);
   }
 
-  return {
-    dots : dots,
-    width : maxX - minX,
-    heigth : maxY - minY
-  }
+
+  return fonts
+}
+
+function offsetToCenter(size, segment) {
+  const offset = Math.floor((size-segment)/2);
+  return offset < 0 ? 0 : offset;
 }
 
 function getKey(font) {
@@ -64,10 +90,8 @@ function getKey(font) {
   const canvas = key.appendChild(document.createElement('canvas'));
   const ctx = canvas.getContext('2d');
   const pixelSize = 1;
-  const offsetX = Math.floor((32-font.width)/2);
-  const offsetY = Math.floor((32-font.heigth)/2);
-  if (offsetX < 0) offsetX = 0;
-  if (offsetY < 0) offsetY = 0;
+  const offsetX = offsetToCenter(32, font.width);
+  const offsetY = offsetToCenter(32, font.height);
 
   // loop to light up a specific pixels
   for (dot of font.dots) {
