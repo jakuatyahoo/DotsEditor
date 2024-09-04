@@ -155,11 +155,13 @@ function clearDots() {
   const grid = document.getElementById('pixel-grid');
   grid.charPosX = 0;
   grid.charPosY = 0;
+  panelDots = []
 
   for (pixel of grid.children)
     pixel.classList.remove('on');
 }
 
+panelDots = []
 function lightUpDots(font) {
   const grid = document.getElementById('pixel-grid');
   if (!grid.charPosX) grid.charPosX = 0;
@@ -173,9 +175,14 @@ function lightUpDots(font) {
   for (dot of font.dots) {
     const index = ((dot.row + grid.charPosY) * 128) + dot.col + (grid.charPosX);
     if (index < grid.children.length) {
-      grid.children[index].classList.add('on');
+        grid.children[index].classList.add('on');
+        panelDots.push({ ...dot, col: dot.col + grid.charPosX })
     }
   }
+
+  // accumulate the font dots to use for display, adding PosX offset to each in sequence
+//    panelDots.concat(font.dots.map(dot => { return { ...dot, row: dot.row + grid.charPosX } }))
+
   grid.charPosX += font.width + 2;
 }
 
@@ -189,5 +196,23 @@ function exportFonts() {
   document.body.appendChild(downloadAnchorNode);
   downloadAnchorNode.click();
   downloadAnchorNode.remove();
+}
+
+const API_SERVER = 'http://192.168.1.17:5555'
+function showDots() {
+    fetch(API_SERVER + '/showDots', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(panelDots)
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Success : ", data)
+        })
+        .catch(error => {
+            console.error("Error : ", error)
+        })
 }
 
