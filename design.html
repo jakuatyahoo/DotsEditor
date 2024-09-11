@@ -25,10 +25,15 @@
             <button onclick="clearGridEditor()" Font()">Clear</button>
             <button onclick="updateFont()">Update Font</button>
             <button onclick="showDots()">Display</button>
-            <button onclick="loadFonts()">Load Old</button>
-            <button onclick="loadFontsArray()">Load New</button>
+            <button onclick="saveContents()">Save Contents</button>
+            <button onclick="loadContents()">Load Contents</button>
+            <button onclick="loadFontsArray()">Load Keys</button>
             <button onclick="exportFonts()">Export</button>
             <button onclick="clearDots()">Erase</button>
+            <button onclick="moveCursor(1,0)">Space</button>
+            <button onclick="moveCursor(-1,0)">BackSpace</button>
+            <button onclick="moveCursor(0,-1)">UpSpace</button>
+            <button onclick="moveCursor(0,1)">DownSpace</button>
             <input type="file" id="fileInput" style="display: none;" multiple />
         </div>
 </div>
@@ -45,14 +50,21 @@
       const grid = document.getElementById('pixel-grid');
 
       // Create 16x16 grid of pixels
-      for (let i = 0; i < 32 * 128; i++) {
-        const pixel = document.createElement('div');
-        pixel.classList.add('pixel');
-        pixel.addEventListener('click', function () {
-          pixel.classList.toggle('on');
-        });
-        grid.appendChild(pixel);
+      for (let row = 0; row < 16; row++) {
+          for (let col = 0; col < 128; col++) {
+            const pixel = document.createElement('div');
+            pixel.classList.add('pixel');
+            pixel.addEventListener('click', function () {
+              pixel.classList.toggle('on');
+              panelDots.push({row, col, color: selectedColor})
+            });
+            grid.appendChild(pixel);
+          }
       }
+
+      // init cursor position to top left
+        grid.charPosX = 0;
+        grid.charPosY = 0;
 
       // Example usage: light up a diagonal line
       const pixelsToLightUp = [

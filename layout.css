@@ -104,7 +104,7 @@ div {
 #pixel-grid {
   display: grid;
   grid-template-columns: repeat(128, 2px);
-  grid-template-rows: repeat(32, 2px);
+  grid-template-rows: repeat(16, 2px);
   gap: 2px;
 }
 

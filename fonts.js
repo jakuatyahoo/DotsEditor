@@ -1,5 +1,37 @@
 const fonts = []
 
+function saveContents() {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fonts));
+  const downloadAnchorNode = document.createElement('a');
+  downloadAnchorNode.setAttribute("href", dataStr);
+  downloadAnchorNode.setAttribute("download", "contents.json");
+  document.body.appendChild(downloadAnchorNode);
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+}
+
+function loadContents() {
+
+  const keyboard = document.getElementsByClassName('keyboard')[0];
+  const fileInput = document.getElementById('fileInput');
+  fileInput.click();
+  fileInput.onchange = function(event) {
+    keyboard.innerHTML = "";
+    fonts.splice(0, fonts.length); // remove all fonts
+    for (file of event.target.files) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const importedData = JSON.parse(e.target.result);
+        for (font of importedData) {
+//          fonts.push(font)
+//          keyboard.appendChild(getKey(font));
+        }
+      }
+      reader.readAsText(file);
+    }
+  }
+}
+
 function loadFontsArray() {
 
   const keyboard = document.getElementsByClassName('keyboard')[0];
@@ -176,7 +208,7 @@ function lightUpDots(font) {
     const index = ((dot.row + grid.charPosY) * 128) + dot.col + (grid.charPosX);
     if (index < grid.children.length) {
         grid.children[index].classList.add('on');
-        panelDots.push({ ...dot, col: dot.col + grid.charPosX })
+        panelDots.push({ ...dot, row: dot.row + grid.charPosY , col: dot.col + grid.charPosX })
     }
   }
 
@@ -186,7 +218,11 @@ function lightUpDots(font) {
   grid.charPosX += font.width + 2;
 }
 
-
+function moveCursor(x,y) {
+  const grid = document.getElementById('pixel-grid');
+    grid.charPosX += x;
+    grid.charPosY += y
+}
 
 function exportFonts() {
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fonts));
@@ -198,7 +234,7 @@ function exportFonts() {
   downloadAnchorNode.remove();
 }
 
-const API_SERVER = 'http://192.168.1.17:5555'
+const API_SERVER = 'http://192.168.1.7:5555'
 function showDots() {
     fetch(API_SERVER + '/showDots', {
         method: 'POST',
