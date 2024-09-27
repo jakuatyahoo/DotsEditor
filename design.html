@@ -28,11 +28,14 @@
                     </div>
                 </div>
                 <div class="containerPanel">
+                    <div label="Pixel">
+                        <input type="color" id="colorWheel" onchange="selectColor(this.value)">
+                    </div>
                     <div label="Content">
-                            <button onclick="showDots()">Display</button>
-                            <button onclick="clearDots()">Erase</button>
-                            <button onclick="saveContents()">Save</button>
-                            <button onclick="loadContents()">Load</button>
+                        <button onclick="showDots()">Display</button>
+                        <button onclick="clearDots()">Erase</button>
+                        <button onclick="saveContents()">Save</button>
+                        <button onclick="loadContents()">Load</button>
                     </div>
                 </div>
             </div>
@@ -89,6 +92,7 @@
                         }
                         else {
                             pixel.classList.toggle('on');
+                            pixel.style.backgroundColor = selectedColor;
                             panelDots.push({ row, col, color: selectedColor })
                         }
                     });

@@ -165,13 +165,13 @@ function drawFont(canvas, font) {
 var currentKey;
 function toggleKey(key, font) {
   //alert(JSON.stringify(font))
-  if (currentKey) currentKey.classList.remove('editing');
-  currentKey = key;
-  key.classList.add('editing');
-  lightUpDots(font)
-  clearGridEditor();
+    if (currentKey) currentKey.classList.remove('editing');
+    currentKey = key;
+    key.classList.add('editing');
+    clearGridEditor();
     setGridFont(font);
     moveCursor(font.width, 0);
+    lightUpDots(font)
 }
 
 // Function to light up specific pixels
@@ -208,8 +208,15 @@ function lightUpDots(font) {
   for (dot of font.dots) {
     const index = ((dot.row + grid.charPosY) * 128) + dot.col + (grid.charPosX);
     if (index < grid.children.length) {
-        grid.children[index].classList.add('on');
-        panelDots.push({ ...dot, row: dot.row + grid.charPosY , col: dot.col + grid.charPosX })
+        const pixel = grid.children[index]
+        pixel.classList.add('on');
+        pixel.style.backgroundColor = selectedColor;
+        panelDots.push({
+            ...dot,
+            color: selectedColor,
+            row: dot.row + grid.charPosY,
+            col: dot.col + grid.charPosX
+        })
     }
   }
 
