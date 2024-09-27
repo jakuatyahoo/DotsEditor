@@ -56,7 +56,10 @@ div {
   /* margin-left: 150px; */
   /* Match the width of the left section */
   background-color: lightyellow;
-  flex: 1
+  flex: 1;
+  padding: 20px;
+  display : flex;
+  flex-direction : column;
     /* Example styling */
 }
 
@@ -102,10 +105,12 @@ div {
 }
 
 #pixel-grid {
-  display: grid;
-  grid-template-columns: repeat(128, 2px);
-  grid-template-rows: repeat(16, 2px);
-  gap: 2px;
+    display: grid;
+    grid-template-columns: repeat(128, 2px);
+    grid-template-rows: repeat(16, 2px);
+    gap: 2px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .pixel {
@@ -113,14 +118,28 @@ div {
   height: 2px;
   background-color: #fff;
   border: 1px solid #ccc;
-  cursor: pointer;
+//  cursor: pointer;
 }
 
 .pixel.on {
   background-color: #000;
 }
 
+.pixel.selected {
+    border: 1px solid blue; /* 3px border on selected item */
+    cursor: default; /* Reset cursor to default after selection */
+}
 
+#pixel-grid.selecting .pixel:hover {
+    border: 1px solid blue; /* Show border */
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10"><rect x="0" y="0" width="10" height="10" fill="none" stroke="black" stroke-width="2"/></svg>') 5 5, auto; /* Custom square cursor */
+}
+
+/* Style when the flag is false */
+#pixel-grid:not(.selecting) .pixel:hover {
+//    border: none; /* No border */
+    cursor: pointer; /* Pointer cursor */
+}
 
 #grid {
   display: grid;
@@ -148,4 +167,47 @@ div {
   width: 1px;
   //  height: 206px;
   background-color: red;
+}
+
+.containerPanel {
+    display : inline;
+}
+
+.containerPanel div {
+    display: inline;
+//    border: 1px solid;
+    margin-right: 5px;
+    margin-top: 10px;
+    padding: 4px;
+}
+
+.containerPanel div::before {
+    content : attr(label);
+    font-size : 10px;
+    color : brown;
+    align-self : end;
+}
+
+.containerPanel button {
+    font-size : 12px;
+}
+
+#spinner {
+    display: none; /* Initially hidden */
+    width: 50px;
+    height: 50px;
+    border: 5px solid lightgray;
+    border-top: 5px solid blue;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }

@@ -119,7 +119,7 @@ function extractFonts(dots) {
     if (font.minX > 0 || font.minY > 0) {
       for (dot of font.dots) {
         dot.col -= font.minX;
-        // dot.row -= font.minY;
+        dot.row -= font.minY;
       }
     }
 
@@ -170,7 +170,8 @@ function toggleKey(key, font) {
   key.classList.add('editing');
   lightUpDots(font)
   clearGridEditor();
-  setGridFont(font);
+    setGridFont(font);
+    moveCursor(font.width, 0);
 }
 
 // Function to light up specific pixels
@@ -221,8 +222,43 @@ function lightUpDots(font) {
 function moveCursor(x,y) {
   const grid = document.getElementById('pixel-grid');
     grid.charPosX += x;
-    grid.charPosY += y
+    grid.charPosY += y;
+    grid.selectedPixel.classList.toggle('selected');
+    (grid.selectedPixel = pixels[grid.charPosY][grid.charPosX]).classList.toggle('selected');
 }
+
+function markCursor() {
+    const grid = document.getElementById('pixel-grid');
+//    grid.style.cursor = `url(${squareCursorURL}), auto`; // Set marking cursor
+    grid.selectingPixel = true;
+    grid.classList.remove('lighting');
+    grid.classList.add('selecting');
+}
+
+// Function to create a hollow square image dynamically
+function createHollowSquareCursor() {
+    // Create a small canvas element
+    const canvas = document.createElement('canvas');
+    canvas.width = 3;  // 3px width
+    canvas.height = 3; // 3px height
+
+    // Get the drawing context
+    const ctx = canvas.getContext('2d');
+
+    // Draw a 1px hollow square
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    ctx.strokeStyle = 'black'; // Border color
+    ctx.lineWidth = 1; // 1px border width
+
+    // Draw the square border
+    ctx.strokeRect(0.5, 0.5, 2, 2); // Slightly offset to center the border within 3x3
+
+    // Convert canvas to data URL
+    return canvas.toDataURL('image/png');
+}
+
+// Create the custom cursor data URL
+const squareCursorURL = createHollowSquareCursor();
 
 function exportFonts() {
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fonts));
@@ -234,8 +270,19 @@ function exportFonts() {
   downloadAnchorNode.remove();
 }
 
-const API_SERVER = 'http://192.168.1.7:5555'
+const DEFAULT_API_SERVER = 'https://192.168.1.7:5555'
+var API_SERVER = DEFAULT_API_SERVER
+
+function updateServer(input) {
+    API_SERVER = input.value
+}
+function setDefaultServer(input) {
+    API_SERVER = DEFAULT_API_SERVER
+}
 function showDots() {
+    // Show spinner
+    spinner.style.display = 'block';
+
     fetch(API_SERVER + '/showDots', {
         method: 'POST',
         headers: {
@@ -249,6 +296,10 @@ function showDots() {
         })
         .catch(error => {
             console.error("Error : ", error)
-        })
+            alert("Request failed - check connection")
+        }).finally(() => {
+            // Hide spinner
+            spinner.style.display = 'none';
+        });
 }
 
