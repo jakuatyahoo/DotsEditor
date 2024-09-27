@@ -1,5 +1,37 @@
 const fonts = []
 
+function saveContents() {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fonts));
+  const downloadAnchorNode = document.createElement('a');
+  downloadAnchorNode.setAttribute("href", dataStr);
+  downloadAnchorNode.setAttribute("download", "contents.json");
+  document.body.appendChild(downloadAnchorNode);
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+}
+
+function loadContents() {
+
+  const keyboard = document.getElementsByClassName('keyboard')[0];
+  const fileInput = document.getElementById('fileInput');
+  fileInput.click();
+  fileInput.onchange = function(event) {
+    keyboard.innerHTML = "";
+    fonts.splice(0, fonts.length); // remove all fonts
+    for (file of event.target.files) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const importedData = JSON.parse(e.target.result);
+        for (font of importedData) {
+//          fonts.push(font)
+//          keyboard.appendChild(getKey(font));
+        }
+      }
+      reader.readAsText(file);
+    }
+  }
+}
+
 function loadFontsArray() {
 
   const keyboard = document.getElementsByClassName('keyboard')[0];
@@ -87,7 +119,7 @@ function extractFonts(dots) {
     if (font.minX > 0 || font.minY > 0) {
       for (dot of font.dots) {
         dot.col -= font.minX;
-        // dot.row -= font.minY;
+        dot.row -= font.minY;
       }
     }
 
@@ -133,12 +165,13 @@ function drawFont(canvas, font) {
 var currentKey;
 function toggleKey(key, font) {
   //alert(JSON.stringify(font))
-  if (currentKey) currentKey.classList.remove('editing');
-  currentKey = key;
-  key.classList.add('editing');
-  lightUpDots(font)
-  clearGridEditor();
-  setGridFont(font);
+    if (currentKey) currentKey.classList.remove('editing');
+    currentKey = key;
+    key.classList.add('editing');
+    clearGridEditor();
+    setGridFont(font);
+    moveCursor(font.width, 0);
+    lightUpDots(font)
 }
 
 // Function to light up specific pixels
@@ -175,8 +208,15 @@ function lightUpDots(font) {
   for (dot of font.dots) {
     const index = ((dot.row + grid.charPosY) * 128) + dot.col + (grid.charPosX);
     if (index < grid.children.length) {
-        grid.children[index].classList.add('on');
-        panelDots.push({ ...dot, col: dot.col + grid.charPosX })
+        const pixel = grid.children[index]
+        pixel.classList.add('on');
+        pixel.style.backgroundColor = selectedColor;
+        panelDots.push({
+            ...dot,
+            color: selectedColor,
+            row: dot.row + grid.charPosY,
+            col: dot.col + grid.charPosX
+        })
     }
   }
 
@@ -186,7 +226,46 @@ function lightUpDots(font) {
   grid.charPosX += font.width + 2;
 }
 
+function moveCursor(x,y) {
+  const grid = document.getElementById('pixel-grid');
+    grid.charPosX += x;
+    grid.charPosY += y;
+    grid.selectedPixel.classList.toggle('selected');
+    (grid.selectedPixel = pixels[grid.charPosY][grid.charPosX]).classList.toggle('selected');
+}
 
+function markCursor() {
+    const grid = document.getElementById('pixel-grid');
+//    grid.style.cursor = `url(${squareCursorURL}), auto`; // Set marking cursor
+    grid.selectingPixel = true;
+    grid.classList.remove('lighting');
+    grid.classList.add('selecting');
+}
+
+// Function to create a hollow square image dynamically
+function createHollowSquareCursor() {
+    // Create a small canvas element
+    const canvas = document.createElement('canvas');
+    canvas.width = 3;  // 3px width
+    canvas.height = 3; // 3px height
+
+    // Get the drawing context
+    const ctx = canvas.getContext('2d');
+
+    // Draw a 1px hollow square
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    ctx.strokeStyle = 'black'; // Border color
+    ctx.lineWidth = 1; // 1px border width
+
+    // Draw the square border
+    ctx.strokeRect(0.5, 0.5, 2, 2); // Slightly offset to center the border within 3x3
+
+    // Convert canvas to data URL
+    return canvas.toDataURL('image/png');
+}
+
+// Create the custom cursor data URL
+const squareCursorURL = createHollowSquareCursor();
 
 function exportFonts() {
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fonts));
@@ -198,8 +277,19 @@ function exportFonts() {
   downloadAnchorNode.remove();
 }
 
-const API_SERVER = 'http://192.168.1.17:5555'
+const DEFAULT_API_SERVER = 'https://192.168.1.7:5555'
+var API_SERVER = DEFAULT_API_SERVER
+
+function updateServer(input) {
+    API_SERVER = input.value
+}
+function setDefaultServer(input) {
+    API_SERVER = DEFAULT_API_SERVER
+}
 function showDots() {
+    // Show spinner
+    spinner.style.display = 'block';
+
     fetch(API_SERVER + '/showDots', {
         method: 'POST',
         headers: {
@@ -213,6 +303,10 @@ function showDots() {
         })
         .catch(error => {
             console.error("Error : ", error)
-        })
+            alert("Request failed - check connection")
+        }).finally(() => {
+            // Hide spinner
+            spinner.style.display = 'none';
+        });
 }
 

@@ -5,7 +5,6 @@ function selectColor(color) {
     selectedColor = color;
 }
 
-
 function toggleDot(dot, row, col) {
     const index = litUpDots.findIndex(d => d.row === row && d.col === col);
     if (index !== -1) {
