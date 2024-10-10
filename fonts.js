@@ -182,7 +182,7 @@ function lightUpPixels(pixels) {
 */
 
 function clearDots() {
-  clearGridEditor()
+//  clearGridEditor()
   const grid = document.getElementById('pixel-grid');
   grid.charPosX = 0;
   grid.charPosY = 0;
