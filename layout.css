@@ -122,7 +122,11 @@ div {
 }
 
 .pixel.on {
-  background-color: #000;
+//    background-color: var(--selectedColor);
+}
+
+.pixel:not(.on) {
+    background-color: white;
 }
 
 .pixel.selected {

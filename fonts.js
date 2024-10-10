@@ -1,7 +1,7 @@
 const fonts = []
 
 function saveContents() {
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(fonts));
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(panelDots));
   const downloadAnchorNode = document.createElement('a');
   downloadAnchorNode.setAttribute("href", dataStr);
   downloadAnchorNode.setAttribute("download", "contents.json");
@@ -16,16 +16,12 @@ function loadContents() {
   const fileInput = document.getElementById('fileInput');
   fileInput.click();
   fileInput.onchange = function(event) {
-    keyboard.innerHTML = "";
-    fonts.splice(0, fonts.length); // remove all fonts
+    clearDots();
     for (file of event.target.files) {
       const reader = new FileReader();
       reader.onload = function(e) {
-        const importedData = JSON.parse(e.target.result);
-        for (font of importedData) {
-//          fonts.push(font)
-//          keyboard.appendChild(getKey(font));
-        }
+        const dots = JSON.parse(e.target.result);
+        lightUpDots(dots)
       }
       reader.readAsText(file);
     }
@@ -170,10 +166,11 @@ function toggleKey(key, font) {
     key.classList.add('editing');
     clearGridEditor();
     setGridFont(font);
-    moveCursor(font.width, 0);
-    lightUpDots(font)
+    lightUpDots(font.dots, font.width, selectedColor)
+    moveCursor(font.width + 2, 0);
 }
 
+/*
 // Function to light up specific pixels
 function lightUpPixels(pixels) {
   const grid = document.getElementById('pixel-grid');
@@ -182,6 +179,7 @@ function lightUpPixels(pixels) {
     grid.children[index].classList.add('on');
   });
 }
+*/
 
 function clearDots() {
   clearGridEditor()
@@ -190,30 +188,34 @@ function clearDots() {
   grid.charPosY = 0;
   panelDots = []
 
-  for (pixel of grid.children)
-    pixel.classList.remove('on');
+    for (pixel of grid.children) {
+        pixel.selected = false;
+        pixel.style.backgroundColor = 'white';
+        pixel.classList.remove('on');
+    }
 }
 
 panelDots = []
-function lightUpDots(font) {
+function lightUpDots(dots, width, dotsColor) {
   const grid = document.getElementById('pixel-grid');
   if (!grid.charPosX) grid.charPosX = 0;
   if (!grid.charPosY) grid.charPosY = 0;
   //  clearDots()
 
-  if ((grid.charPosX + font.width) >= 128) {
+  if ((grid.charPosX + width) >= 128) {
     grid.charPosX = 0;
     grid.charPosY += 1 * 16;
   }
-  for (dot of font.dots) {
+  for (dot of dots) {
     const index = ((dot.row + grid.charPosY) * 128) + dot.col + (grid.charPosX);
     if (index < grid.children.length) {
         const pixel = grid.children[index]
         pixel.classList.add('on');
-        pixel.style.backgroundColor = selectedColor;
+        pixel.selected = true;
+        pixel.style.backgroundColor = (dotsColor ? dotsColor:dot.color);
         panelDots.push({
             ...dot,
-            color: selectedColor,
+            color: (dotsColor ? dotsColor : dot.color),
             row: dot.row + grid.charPosY,
             col: dot.col + grid.charPosX
         })
@@ -223,7 +225,8 @@ function lightUpDots(font) {
   // accumulate the font dots to use for display, adding PosX offset to each in sequence
 //    panelDots.concat(font.dots.map(dot => { return { ...dot, row: dot.row + grid.charPosX } }))
 
-  grid.charPosX += font.width + 2;
+// commenting out - moveCursor would already do this!!
+//  grid.charPosX += font.width + 2;
 }
 
 function moveCursor(x,y) {
@@ -277,7 +280,7 @@ function exportFonts() {
   downloadAnchorNode.remove();
 }
 
-const DEFAULT_API_SERVER = 'https://192.168.1.7:5555'
+const DEFAULT_API_SERVER = 'http://192.168.1.7:5555'
 var API_SERVER = DEFAULT_API_SERVER
 
 function updateServer(input) {

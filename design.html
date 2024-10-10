@@ -70,6 +70,9 @@
             const apiServer = document.getElementById('apiServer');
             apiServer.value = API_SERVER;
 
+            const colorWheel = document.getElementById('colorWheel');
+            colorWheel.value = selectedColor;
+
             const grid = document.getElementById('pixel-grid');
 
             // Create 16x16 grid of pixels
@@ -80,6 +83,7 @@
                     pixel.row = row; pixel.col = col;
                     pixels[row][col] = pixel;
                     pixel.classList.add('pixel');
+                    pixel.selected = false;
                     pixel.addEventListener('click', function () {
                         if (grid.selectingPixel) {
                             grid.selectingPixel = false;
@@ -91,9 +95,18 @@
                             grid.charPosY = pixel.row;
                         }
                         else {
-                            pixel.classList.toggle('on');
-                            pixel.style.backgroundColor = selectedColor;
-                            panelDots.push({ row, col, color: selectedColor })
+                            pixel.selected = !pixel.selected;
+                            if (pixel.selected) {
+                                pixel.classList.add('on');
+                                pixel.style.backgroundColor = selectedColor;
+                                panelDots.push({ row, col, color: selectedColor })
+                            }
+                            else {
+                                const index = panelDots.findIndex(d => d.row === row && d.col === col);
+                                panelDots.splice(index, 1);
+                                pixel.style.backgroundColor = 'white';
+                                pixel.classList.remove('on');
+                            }
                         }
                     });
                     grid.appendChild(pixel);
