@@ -1,10 +1,24 @@
 const fonts = []
 
 function saveContents() {
+    // Prompt the user for a file name
+    let fileName = prompt("Enter the file name:", "contents");
+
+    // Check if the user clicked "Cancel" or entered an empty string
+    if (fileName === null || fileName.trim() === "") {
+        alert("Save canceled.");
+        return; // Exit the function, stopping the export
+    }
+
+    // Append a file extension if not already provided (optional)
+    if (!fileName.endsWith('.json')) {
+        fileName += '.json';
+    }
+
   const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(panelDots));
   const downloadAnchorNode = document.createElement('a');
   downloadAnchorNode.setAttribute("href", dataStr);
-  downloadAnchorNode.setAttribute("download", "contents.json");
+    downloadAnchorNode.setAttribute("download", fileName);
   document.body.appendChild(downloadAnchorNode);
   downloadAnchorNode.click();
   downloadAnchorNode.remove();
