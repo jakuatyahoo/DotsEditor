@@ -1,5 +1,5 @@
-let selectedColor = 'red';
 const litUpDots = [];
+let selectedColor = '#0000ff';
 
 function selectColor(color) {
     selectedColor = color;
