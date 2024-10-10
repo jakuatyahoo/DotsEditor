@@ -87,7 +87,7 @@ div {
   grid-gap: 3px;
   //  margin: 10px;
   flex: 1;
-  boder: solid black 1px;
+  border: solid black 1px;
   justify-content: space-evenly;
   align-content: space-evenly;
 }
