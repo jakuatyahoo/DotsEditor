@@ -48,7 +48,21 @@ function loadFontsArray() {
   const fileInput = document.getElementById('fileInput');
   fileInput.click();
   fileInput.onchange = function(event) {
-    keyboard.innerHTML = "";
+      keyboard.innerHTML = "";
+/*      for (i = 0; i < 40; i++) {
+          const font = {
+              dots: [],
+              width: 0,
+              height: 0,
+              minX: 0,
+              minY: 0,
+              maxY: 0,
+              maxX: 0
+          };
+          fonts.push(font)
+          keyboard.appendChild(getKey(font));
+      }
+*/
     fonts.splice(0, fonts.length); // remove all fonts
     for (file of event.target.files) {
       const reader = new FileReader();
@@ -67,7 +81,20 @@ function loadFontsArray() {
 function loadFonts() {
 
   const keyboard = document.getElementsByClassName('keyboard')[0];
-  const fileInput = document.getElementById('fileInput');
+    const fileInput = document.getElementById('fileInput');
+    // Set up the dragover event (to allow dropping)
+    keyboard.addEventListener('dragover', function (event) {
+        event.preventDefault(); // Prevent default behavior to allow drop
+    });
+    keyboard.addEventListener('drop', function (event) {
+        event.preventDefault(); // Prevent default behavior
+        const draggableElementId = event.dataTransfer.getData('text');
+        const draggableElement = document.getElementById(draggableElementId);
+
+        // Append the dragged element to the drop zone
+        keyboard.appendChild(draggableElement);
+    });
+
   fileInput.click();
   fileInput.onchange = function(event) {
     keyboard.innerHTML = "";
@@ -144,15 +171,36 @@ function offsetToCenter(size, segment) {
   const offset = Math.floor((size - segment) / 2);
   return offset < 0 ? 0 : offset;
 }
-
+var keyNumber = 0;
+const keys = {}
 function getKey(font) {
   const key = document.createElement('div');
   key.classList.add('key');
-  key.dataset.font = font;
+    key.dataset.font = font;
+    keys[(key.keyNumber = keyNumber++)] = key;
+    key.setAttribute("draggable", true);
   key.addEventListener('click',
-    () => toggleKey(key, font));
-  const canvas = key.appendChild(document.createElement('canvas'));
-  font.canvas = canvas;
+      () => toggleKey(key, font));
+
+    // Set up the dragstart event
+    key.addEventListener('dragstart', function (event) {
+        event.dataTransfer.setData('text/plain', key.keyNumber)
+    });
+    key.addEventListener('dragover', function (event) {
+        event.preventDefault(); // Prevent default behavior
+    });
+    key.addEventListener('drop', function (event) {
+        event.preventDefault(); // Prevent default behavior
+
+        const keyNumber = event.dataTransfer.getData('text/plain')
+        const srcE = keys[keyNumber]
+        key.parentElement.insertBefore(srcE, key);
+   });
+
+    const canvas = key.appendChild(document.createElement('canvas'));
+    canvas.width = 32;
+    canvas.height = 32;
+    font.canvas = canvas;
   drawFont(canvas, font);
   return key;
 }
